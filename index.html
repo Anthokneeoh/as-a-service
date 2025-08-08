@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: MyCover.ai As-A-Service</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The application is designed as a task-oriented, single-page guide, diverging from the source document's linear, tab-based structure. The goal is to allow users to quickly find solutions to specific tasks. It starts with a high-level 'Dashboard' for a visual overview (stats and a chart), followed by a 'Core Tasks' section with interactive tabs for key workflows (uploading, creating links, managing). Each task includes an interactive HTML/CSS flowchart that highlights corresponding text instructions on hover, reinforcing the learning process. A final section covers universal features. This structure prioritizes user intent and quick problem-solving over passive reading, making the guide a more effective support tool. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Dashboard stats (Total Policies, etc.). Goal: Inform. Method: Styled HTML cards. Interaction: Subtle hover effect. Justification: Provides a quick, scannable overview of platform activity.
+        - Report Info: Monthly Claims vs. Inspections. Goal: Compare/Change. Method: Chart.js Bar Chart. Interaction: Tooltips on hover for precise data. Justification: Visualizes trends effectively, as mentioned in the source. Library: Chart.js.
+        - Report Info: User Flows (Uploading, Creating Links, etc.). Goal: Organize/Explain Process. Method: Interactive HTML/CSS flowcharts. Interaction: Hovering over a diagram step highlights the relevant text instruction. Justification: This creates a dynamic, intuitive connection between the visual process and detailed steps, which is more engaging and clearer than the static Mermaid diagrams.
+        - Report Info: Core Actions (Uploading, Creating Links). Goal: Organize. Method: JS-powered tabbed interface. Interaction: Clicking tabs reveals focused content. Justification: Prevents information overload and allows users to navigate directly to their area of interest.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #3D4756;
+        }
+
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #4A6C6F;
+            border-bottom-color: #4A6C6F;
+        }
+
+        .task-tab {
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .task-tab.active {
+            background-color: #4A6C6F;
+            color: #FFFFFF;
+        }
+
+        .flow-step {
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .flow-step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .flow-text-instruction.highlight {
+            background-color: #E3EAEB;
+            border-left-color: #4A6C6F;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-30 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-[#3D4756]">MyCover.ai Guide</h1>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#overview" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Overview</a>
+                <a href="#tasks" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Core Tasks</a>
+                <a href="#tools" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">Universal Tools</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="welcome" class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-[#4A6C6F] mb-4">Welcome to As-A-Service</h2>
+            <p class="text-lg max-w-3xl mx-auto text-gray-600">This interactive guide will help you master the
+                platform's features. We've structured it around the actions you'll perform most, allowing you to find
+                help quickly and efficiently.</p>
+        </section>
+
+        <section id="overview" class="mb-20">
+            <h3 class="text-3xl font-bold mb-2 text-center">Your Mission Control</h3>
+            <p class="text-center text-gray-500 mb-10">The dashboard gives you a complete overview of your activities at
+                a glance. Here's an interactive look at what you'll find.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md text-center transform hover:scale-105 transition-transform">
+                    <div class="text-5xl mb-2">📄</div>
+                    <h4 class="text-xl font-semibold mb-1">Total Policies</h4>
+                    <p class="text-3xl font-bold text-[#4A6C6F]">1,284</p>
+                </div>
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md text-center transform hover:scale-105 transition-transform">
+                    <div class="text-5xl mb-2">🔍</div>
+                    <h4 class="text-xl font-semibold mb-1">Inspections</h4>
+                    <p class="text-3xl font-bold text-[#4A6C6F]">312</p>
+                </div>
+                <div
+                    class="bg-white p-6 rounded-xl shadow-md text-center transform hover:scale-105 transition-transform">
+                    <div class="text-5xl mb-2">📋</div>
+                    <h4 class="text-xl font-semibold mb-1">Pending Claims</h4>
+                    <p class="text-3xl font-bold text-[#4A6C6F]">47</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                <h4 class="text-2xl font-bold text-center mb-1">Monthly Service Overview</h4>
+                <p class="text-center text-gray-500 mb-6">Track your monthly claims versus inspections to spot trends.
+                </p>
+                <div class="chart-container">
+                    <canvas id="serviceOverviewChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="tasks" class="mb-20">
+            <h3 class="text-3xl font-bold mb-2 text-center">Mastering Core Tasks</h3>
+            <p class="text-center text-gray-500 mb-10">Select a task below to see an interactive, step-by-step guide.
+                Hover over a step in the diagram to highlight the instructions.</p>
+
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-8">
+                <div id="task-tabs-container" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                    <button data-task="upload"
+                        class="task-tab w-full md:w-auto px-6 py-3 font-semibold rounded-lg active">Uploading
+                        Policies</button>
+                    <button data-task="create"
+                        class="task-tab w-full md:w-auto px-6 py-3 font-semibold rounded-lg">Creating Links</button>
+                    <button data-task="manage"
+                        class="task-tab w-full md:w-auto px-6 py-3 font-semibold rounded-lg">Managing Links</button>
+                </div>
+
+                <div id="task-content">
+                    <div class="task-panel active" data-task-panel="upload">
+                        <div class="text-center mb-8">
+                            <h4 class="text-2xl font-bold">How to Upload Policies</h4>
+                            <p class="text-gray-600 max-w-2xl mx-auto">This is your first and most important step.
+                                Follow this flow to get your customer policies onto the platform.</p>
+                        </div>
+                        <div class="flex flex-col items-center space-y-4 mb-8">
+                            <div class="flow-step bg-sky-100 text-sky-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="1">1. Start on Dashboard & Click Upload</div>
+                            <div class="text-2xl text-gray-400">↓</div>
+                            <div class="flow-step bg-sky-100 text-sky-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="2">2. Download & Prepare Template</div>
+                            <div class="text-2xl text-gray-400">↓</div>
+                            <div class="flow-step bg-sky-100 text-sky-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="3">3. Upload Your Spreadsheet</div>
+                            <div class="text-2xl text-gray-400">↓</div>
+                            <div class="flow-step bg-green-100 text-green-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="4">4. Success! View Policies</div>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <p data-instruction-text="1"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Find the Upload Button:</strong> If you're a new user, click the main "Get
+                                Started" button. If you're an existing user, find "Upload new policy" at the top right
+                                of the dashboard.
+                            </p>
+                            <p data-instruction-text="2"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Use the Template:</strong> It is crucial to download the sample .XLS template
+                                first. Your policy data spreadsheet must be formatted with the exact same columns and
+                                structure to ensure a successful upload.
+                            </p>
+                            <p data-instruction-text="3"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Select Your File:</strong> Click the upload prompt and select your prepared
+                                spreadsheet, or simply drag and drop the file into the designated area.
+                            </p>
+                            <p data-instruction-text="4"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Confirmation:</strong> After a successful upload, the button will change to
+                                "View policies." Clicking it will take you directly to the Policies Tab where you can
+                                see all your data.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="task-panel hidden" data-task-panel="create">
+                        <div class="text-center mb-8">
+                            <h4 class="text-2xl font-bold">How to Create Inspection & Claim Links</h4>
+                            <p class="text-gray-600 max-w-2xl mx-auto">Generate links for customers to complete
+                                pre/post-loss inspections or to initiate a claim. The process is identical for both.</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+                                <h5 class="font-bold text-blue-800">One-Time Link</h5>
+                                <p class="text-blue-700">For a single, specific policy. It can only be used once.</p>
+                            </div>
+                            <div class="bg-purple-50 border-l-4 border-purple-400 p-4 rounded-r-lg">
+                                <h5 class="font-bold text-purple-800">Global Link</h5>
+                                <p class="text-purple-700">A general link that can be used for multiple policies and
+                                    instances.</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center space-y-4 mb-8">
+                            <div class="flow-step bg-indigo-100 text-indigo-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="5">1. Go to Inspections/Claims Tab & Click 'Create Link'</div>
+                            <div class="text-2xl text-gray-400">↓</div>
+                            <div class="flow-step bg-indigo-100 text-indigo-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="6">2. Choose Link Type (One-Time or Global)</div>
+                            <div class="text-2xl text-gray-400">↓</div>
+                            <div class="flow-step bg-indigo-100 text-indigo-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="7">3. Select Policy (for One-Time) or Confirm (for Global)</div>
+                            <div class="text-2xl text-gray-400">↓</div>
+                            <div class="flow-step bg-green-100 text-green-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="8">4. Success! Link is Generated</div>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <p data-instruction-text="5"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Start the Process:</strong> From either the Inspections or Claims tab, click the
+                                "Create Link" button to open the creation modal.
+                            </p>
+                            <p data-instruction-text="6"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Select Link Type:</strong> In the pop-up, choose whether you need a "One-Time
+                                Link" for a specific policy or a reusable "Global Link." Click "Proceed."
+                            </p>
+                            <p data-instruction-text="7"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Finalize the Link:</strong> If you chose "One-Time," a list of your policies
+                                will appear; find the correct one and click "Create Link." If you chose "Global," simply
+                                review the details and click "Generate Link."
+                            </p>
+                            <p data-instruction-text="8"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Confirmation:</strong> Your new link is now created and will appear in the list
+                                on the current tab and also in the main "Links" tab.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="task-panel hidden" data-task-panel="manage">
+                        <div class="text-center mb-8">
+                            <h4 class="text-2xl font-bold">How to Manage Your Links</h4>
+                            <p class="text-gray-600 max-w-2xl mx-auto">The Links Tab is your central hub for all
+                                generated links. From here, you can view details, disable, or delete them.</p>
+                        </div>
+                        <div class="flex flex-col items-center space-y-4 mb-8">
+                            <div class="flow-step bg-amber-100 text-amber-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="9">1. Go to Links Tab & Find Your Link</div>
+                            <div class="text-2xl text-gray-400">↓</div>
+                            <div class="flow-step bg-amber-100 text-amber-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="10">2. Click 'Details' Under the Actions Column</div>
+                            <div class="text-2xl text-gray-400">↓</div>
+                            <div class="flow-step bg-amber-100 text-amber-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="11">3. Choose Action in Sidebar (Disable or Delete)</div>
+                            <div class="text-2xl text-gray-400">↓</div>
+                            <div class="flow-step bg-green-100 text-green-800 p-4 rounded-lg w-full md:w-3/4 text-center shadow"
+                                data-instruction="12">4. Success! Link is Updated</div>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <p data-instruction-text="9"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Locate the Link:</strong> Navigate to the "Links" tab. Find the specific link
+                                you wish to manage in the master list.
+                            </p>
+                            <p data-instruction-text="10"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>View Details:</strong> In the row for that link, find the "Actions" column and
+                                click on the "Details" button.
+                            </p>
+                            <p data-instruction-text="11"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Take Action:</strong> A "Link Information" sidebar will appear. From here, you
+                                can choose to "Disable Link" (making it inactive) or "Delete Link" (removing it
+                                permanently).
+                            </p>
+                            <p data-instruction-text="12"
+                                class="flow-text-instruction border-l-4 border-transparent p-4 transition-all">
+                                <strong>Confirmation:</strong> The link's status will be updated in the system
+                                immediately according to the action you took.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tools" class="text-center">
+            <h3 class="text-3xl font-bold mb-2">Universal Tools</h3>
+            <p class="text-gray-500 mb-8 max-w-2xl mx-auto">On every main tab of the platform (Dashboard, Policies,
+                Inspections, Claims, and Links), you have powerful tools to manage your data.</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="text-5xl mb-3">🎛️</div>
+                    <h4 class="text-2xl font-bold mb-2">Filter Your Data</h4>
+                    <p class="text-gray-600">Use the filter options and search bar to narrow down the records you see on
+                        screen. This is perfect for finding specific policies, claims with a certain status, or active
+                        links.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="text-5xl mb-3">📤</div>
+                    <h4 class="text-2xl font-bold mb-2">Export to Spreadsheet</h4>
+                    <p class="text-gray-600">After filtering, you can click the "Export" button to download the
+                        currently visible data as a spreadsheet file, making reporting and external analysis simple.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2024 MyCover.ai Interactive Guide. All Rights Reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">This guide is for demonstration purposes.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const chartCtx = document.getElementById('serviceOverviewChart').getContext('2d');
+            const serviceOverviewChart = new Chart(chartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Claims',
+                        data: [65, 59, 80, 81, 56, 55],
+                        backgroundColor: 'rgba(74, 108, 111, 0.6)',
+                        borderColor: 'rgba(74, 108, 111, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Inspections',
+                        data: [45, 49, 60, 71, 46, 35],
+                        backgroundColor: 'rgba(127, 153, 155, 0.6)',
+                        borderColor: 'rgba(127, 153, 155, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e5e7eb'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    }
+                }
+            });
+
+            const taskTabs = document.querySelectorAll('.task-tab');
+            const taskPanels = document.querySelectorAll('.task-panel');
+
+            taskTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const task = tab.dataset.task;
+
+                    taskTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    taskPanels.forEach(panel => {
+                        if (panel.dataset.taskPanel === task) {
+                            panel.classList.remove('hidden');
+                            panel.classList.add('active');
+                        } else {
+                            panel.classList.add('hidden');
+                            panel.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            const flowSteps = document.querySelectorAll('.flow-step');
+            const instructionTexts = document.querySelectorAll('.flow-text-instruction');
+
+            flowSteps.forEach(step => {
+                step.addEventListener('mouseenter', () => {
+                    const instructionId = step.dataset.instruction;
+                    const targetText = document.querySelector(`[data-instruction-text="${instructionId}"]`);
+
+                    instructionTexts.forEach(text => text.classList.remove('highlight'));
+                    if (targetText) {
+                        targetText.classList.add('highlight');
+                    }
+                });
+
+                step.addEventListener('mouseleave', () => {
+                    instructionTexts.forEach(text => text.classList.remove('highlight'));
+                });
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
